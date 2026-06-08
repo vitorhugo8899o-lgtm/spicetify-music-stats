@@ -1,17 +1,45 @@
+// Contexto Global Para ser acessado pelo 'onprogress'
+let currentSession = {
+    registered: false,
+    eventData: null
+};
+
+
 // Captura o evento de mudança de musica
 Spicetify.Player.addEventListener("songchange", (event) => {
-    const track = Spicetify.Player.data?.item ?? false;
-    console.log("Capturado o Evento de mudança:", track)
-    buildPlaybackEvent(track)
+    const track = event.data?.item ?? false;
+
+    if (track === false) {
+        console.log("Item not found!")
+        return;
+    }
+
+    currentSession = {
+        registered: false,
+        eventData: buildPlaybackEvent(track)
+    }
+
+    console.log(currentSession.eventData)
+});
+
+
+Spicetify.Player.addEventListener("onprogress", () => {
+    if (currentSession.registered === true) {
+        return;
+    }
+
+    let progress = Spicetify.Player.getProgressPercent()
+
+    if (progress >= 0.60) {
+        console.log("Dado salvo!, musica a ser salva:", currentSession)
+        currentSession.registered = true
+        return;
+    }
 });
 
 
 // Construtor
 function buildPlaybackEvent(object) {
-    if (object === false) {
-        console.log("Objeto não encontrado!")
-        return;
-    }
 
     const build = {
         "trackUri": object.uri,
@@ -33,6 +61,5 @@ function buildPlaybackEvent(object) {
         "playedAt": Date.now()
     }
 
-    console.log(build)
-    console.log(build.artists[0])
+    return build;
 }
