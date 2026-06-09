@@ -1,6 +1,10 @@
 {
     "name": "music-stats",
+    "icon": "",
+    "active-icon": "",
+    "subfiles": [],
     "subfiles_extension": [
-        "Tracker.js"
+        "Tracker.js",
+        "Storage.js"
     ]
 }
