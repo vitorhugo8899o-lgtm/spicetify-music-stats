@@ -28,12 +28,15 @@ Spicetify.Player.addEventListener("onprogress", () => {
         return;
     }
 
-    let progress = Spicetify.Player.getProgressPercent()
+    let progress = Spicetify.Player.getProgressPercent();
 
     if (progress >= 0.60) {
-        console.log("Dado salvo!, musica a ser salva:", currentSession)
-        currentSession.registered = true
-        return;
+        console.log("Music reached 60%. Saving...");
+
+        const resultado = window.MusicStats.Storage.saveEvent(currentSession.eventData);
+        console.log(resultado);
+
+        currentSession.registered = true;
     }
 });
 
