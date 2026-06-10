@@ -9,6 +9,11 @@ let currentSession = {
 Spicetify.Player.addEventListener("songchange", (event) => {
     const track = event.data?.item ?? false;
 
+    if (track.type === "ad") {
+        console.log("Ad skip!")
+        return;
+    }
+
     if (track === false) {
         console.log("Item not found!")
         return;

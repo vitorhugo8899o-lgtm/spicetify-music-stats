@@ -5,6 +5,7 @@
     "subfiles": [],
     "subfiles_extension": [
         "Tracker.js",
-        "Storage.js"
+        "Storage.js",
+        "Metrics.js"
     ]
 }
