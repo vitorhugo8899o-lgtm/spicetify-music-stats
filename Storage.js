@@ -3,7 +3,6 @@ window.MusicStats = window.MusicStats || {};
 const STORAGE_KEY = "music-stats:data";
 
 async function waitForSpicetify() {
-    // Aguarda o Platform estar disponível
     while (!Spicetify?.Platform?.LocalStorageAPI) {
         await new Promise(resolve => setTimeout(resolve, 300));
     }
@@ -16,7 +15,7 @@ window.MusicStats.Storage = {
         try {
             await waitForSpicetify();
 
-            const todayDate = getLocalDate();
+            const todayDate = window.MusicStats.Utils.getLocalDate();
             const data = Spicetify.Platform.LocalStorageAPI.getItem(STORAGE_KEY) ?? {};
 
             if (!data[todayDate]) data[todayDate] = [];

@@ -2,7 +2,7 @@ window.MusicStats.Metrics = {
     async musicTodayCont() {
         const musicList = await window.MusicStats.Storage.getEventToday();
 
-        const todayDate = getLocalDate();
+        const todayDate = window.MusicStats.Utils.getLocalDate();
 
         if (!musicList || !musicList[todayDate]) {
             console.log("No music found today.");
