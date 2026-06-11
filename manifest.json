@@ -4,6 +4,7 @@
     "active-icon": "",
     "subfiles": [],
     "subfiles_extension": [
+        "utils.js",
         "Tracker.js",
         "Storage.js",
         "Metrics.js"
