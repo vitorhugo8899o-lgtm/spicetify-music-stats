@@ -2,47 +2,43 @@ window.MusicStats = window.MusicStats || {};
 
 const STORAGE_KEY = "music-stats:data";
 
-const todayDate = new Date().toISOString().split("T")[0];
+async function waitForSpicetify() {
+    // Aguarda o Platform estar disponível
+    while (!Spicetify?.Platform?.LocalStorageAPI) {
+        await new Promise(resolve => setTimeout(resolve, 300));
+    }
+}
 
 window.MusicStats.Storage = {
-    saveEvent(event) {
-        if (!event) {
-            return "Erro: No event received!";
-        }
+    async saveEvent(event) {
+        if (!event) return "Erro: No event received!";
 
         try {
-            const raw = Spicetify.LocalStorage.get(STORAGE_KEY);
+            await waitForSpicetify();
 
-            const data = raw ? JSON.parse(raw) : {};
+            const todayDate = getLocalDate();
+            const data = Spicetify.Platform.LocalStorageAPI.getItem(STORAGE_KEY) ?? {};
 
-            if (!data[todayDate]) {
-                data[todayDate] = [];
-            }
+            if (!data[todayDate]) data[todayDate] = [];
 
             data[todayDate].push(event);
 
-            Spicetify.LocalStorage.set(
-                STORAGE_KEY,
-                JSON.stringify(data)
-            );
+            Spicetify.Platform.LocalStorageAPI.setItem(STORAGE_KEY, data);
 
-            return "Event save!";
+            return "Event saved!";
         } catch (error) {
             return `Erro: ${error}`;
         }
     },
-    getEventToday() {
+
+    async getEventToday() {
         try {
-            const listToday = Spicetify.LocalStorage.get(STORAGE_KEY);
+            await waitForSpicetify();
 
-            if (!listToday) {
-                return {};
-            }
-
-            return JSON.parse(listToday);
+            return Spicetify.Platform.LocalStorageAPI.getItem(STORAGE_KEY) ?? {};
         } catch (error) {
             console.error(error);
             return {};
         }
     }
-}
+};
