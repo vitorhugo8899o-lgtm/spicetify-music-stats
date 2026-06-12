@@ -6,6 +6,7 @@
         "Metrics.js"
     ],
     "subfiles_extension": [
+        "Database.js",
         "Tracker.js",
         "Storage.js",
         "utils.js"
