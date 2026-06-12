@@ -57,5 +57,46 @@ window.MusicStats.Metrics = {
 
         console.log(Object.values(counts).sort((a, b) => b.count - a.count))
         return Object.values(counts).sort((a, b) => b.count - a.count);
+    },
+    async getListenTimeToday() {
+        const tracks = await window.MusicStats.Storage.getEventToday()
+        const todayDate = window.MusicStats.Utils.getLocalDate();
+
+        if (!tracks || !tracks[todayDate]) {
+            return "No events received.";
+        }
+
+        let totalMS = 0
+
+        for (const time of tracks[todayDate]) {
+            totalMS += time.durationMs
+        }
+
+        const totalTime = window.MusicStats.Utils.formatTimeListened(totalMS);
+
+        console.log(totalTime)
+        return totalTime;
+    },
+    async getTopAlbumToday() {
+        const tracks = await window.MusicStats.Storage.getEventToday()
+        const todayDate = window.MusicStats.Utils.getLocalDate();
+
+        if (!tracks || !tracks[todayDate]) {
+            return "No events received.";
+        }
+
+        const counts = {}
+
+        for (let i = 0; i < tracks[todayDate].length; i++) {
+            const uri = tracks[todayDate][i].albumUri;
+
+            if (!counts[uri]) {
+                counts[uri] = { count: 0, albumName: tracks[todayDate][i].albumName, albumUri: tracks[todayDate][i].albumUri };
+            }
+            counts[uri].count++;
+        }
+
+        console.log(Object.values(counts).sort((a, b) => b.count - a.count))
+        return Object.values(counts).sort((a, b) => b.count - a.count);
     }
 }
