@@ -32,7 +32,7 @@ window.MusicStats.Metrics = {
         console.log(Object.values(counts).sort((a, b) => b.count - a.count))
         return Object.values(counts).sort((a, b) => b.count - a.count);
     },
-    async getTopArtistsToday() {
+    async getMetricArtists() {
         const tracks = await window.MusicStats.Storage.getEventToday()
         const todayDate = window.MusicStats.Utils.getLocalDate();
 
@@ -40,6 +40,7 @@ window.MusicStats.Metrics = {
             return "No events received.";
         }
 
+        let result = ""
         const counts = {}
 
         for (let i = 0; i < tracks[todayDate].length; i++) {
@@ -55,8 +56,11 @@ window.MusicStats.Metrics = {
             }
         }
 
-        console.log(Object.values(counts).sort((a, b) => b.count - a.count))
-        return Object.values(counts).sort((a, b) => b.count - a.count);
+        result = Object.values(counts).sort((a, b) => b.count - a.count)
+
+        console.log(result.length)
+        console.log(result)
+        return [result, result.length]
     },
     async getListenTimeToday() {
         const tracks = await window.MusicStats.Storage.getEventToday()
@@ -98,5 +102,5 @@ window.MusicStats.Metrics = {
 
         console.log(Object.values(counts).sort((a, b) => b.count - a.count))
         return Object.values(counts).sort((a, b) => b.count - a.count);
-    }
+    },
 }
