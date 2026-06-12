@@ -7,6 +7,14 @@ function render() {
         "Today Music"
     );
 
+    const mostPlayMusicToday = Spicetify.React.createElement(
+        "button",
+        {
+            onClick: () => { window.MusicStats.Metrics.getMostPlayedToday() }
+        },
+        "Most Play Music"
+    );
+
     const totalTracks = Spicetify.React.createElement(
         "div",
         null,
@@ -29,5 +37,6 @@ function render() {
         totalTracks,
         favoriteArtist,
         musicTodayButton,
+        mostPlayMusicToday
     );
 }
