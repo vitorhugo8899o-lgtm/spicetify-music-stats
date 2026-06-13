@@ -81,7 +81,7 @@ window.MusicStats.Metrics = {
         console.log(totalTime)
         return totalTime;
     },
-    async getTopAlbumToday() {
+    async getAlbumMetricsToday() {
         const tracks = await window.MusicStats.Storage.getEventToday()
         const todayDate = window.MusicStats.Utils.getLocalDate();
 
@@ -89,6 +89,7 @@ window.MusicStats.Metrics = {
             return "No events received.";
         }
 
+        result = ""
         const counts = {}
 
         for (let i = 0; i < tracks[todayDate].length; i++) {
@@ -100,8 +101,13 @@ window.MusicStats.Metrics = {
             counts[uri].count++;
         }
 
-        console.log(Object.values(counts).sort((a, b) => b.count - a.count))
-        return Object.values(counts).sort((a, b) => b.count - a.count);
+        result = Object.values(counts).sort((a, b) => b.count - a.count)
+        console.log(result)
+
+        return {
+            top_albums: result,
+            unique_albums: result.length
+        }
     },
     async getDailyTrackEnds() {
         const tracks = await window.MusicStats.Storage.getEventToday()
