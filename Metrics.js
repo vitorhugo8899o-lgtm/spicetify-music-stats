@@ -103,4 +103,24 @@ window.MusicStats.Metrics = {
         console.log(Object.values(counts).sort((a, b) => b.count - a.count))
         return Object.values(counts).sort((a, b) => b.count - a.count);
     },
+    async getDailyTrackEnds() {
+        const tracks = await window.MusicStats.Storage.getEventToday()
+        const todayDate = window.MusicStats.Utils.getLocalDate();
+
+        if (!tracks || !tracks[todayDate]) {
+            return "No events received.";
+        }
+
+        const firstSongToday = tracks[todayDate][0]["playedAt"]
+        const lastSongToday = tracks[todayDate].at(-1)["playedAt"]
+
+        const formatHours = window.MusicStats.Utils.getDailyMusicBoundaries(firstSongToday, lastSongToday)
+
+        if (formatHours.firts === "None" || formatHours.last === "None") {
+            return "No music data";
+        }
+
+        console.log(formatHours)
+        return formatHours;
+    }
 }
