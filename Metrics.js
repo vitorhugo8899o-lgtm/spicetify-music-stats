@@ -12,7 +12,7 @@ window.MusicStats.Metrics = {
         console.log(musicList[todayDate].length);
         return musicList[todayDate];
     },
-    async getMostPlayedToday() {
+    async getMetricsPlayedToday() {
         const tracks = await window.MusicStats.Storage.getEventToday()
         const todayDate = window.MusicStats.Utils.getLocalDate();
 
@@ -20,6 +20,7 @@ window.MusicStats.Metrics = {
             return "No events received.";
         }
 
+        let result = ""
         const counts = {};
 
         for (let i = 0; i <= tracks[todayDate].length - 1; i++) {
@@ -29,10 +30,14 @@ window.MusicStats.Metrics = {
             }
             counts[uri].count++;
         }
-        console.log(Object.values(counts).sort((a, b) => b.count - a.count))
-        return Object.values(counts).sort((a, b) => b.count - a.count);
+
+        result = Object.values(counts).sort((a, b) => b.count - a.count)
+
+        console.log(result.length)
+        console.log(result)
+        return [result, result.length]
     },
-    async getTopArtistsToday() {
+    async getMetricArtists() {
         const tracks = await window.MusicStats.Storage.getEventToday()
         const todayDate = window.MusicStats.Utils.getLocalDate();
 
@@ -40,6 +45,7 @@ window.MusicStats.Metrics = {
             return "No events received.";
         }
 
+        let result = ""
         const counts = {}
 
         for (let i = 0; i < tracks[todayDate].length; i++) {
@@ -55,8 +61,11 @@ window.MusicStats.Metrics = {
             }
         }
 
-        console.log(Object.values(counts).sort((a, b) => b.count - a.count))
-        return Object.values(counts).sort((a, b) => b.count - a.count);
+        result = Object.values(counts).sort((a, b) => b.count - a.count)
+
+        console.log(result.length)
+        console.log(result)
+        return [result, result.length]
     },
     async getListenTimeToday() {
         const tracks = await window.MusicStats.Storage.getEventToday()
@@ -98,5 +107,25 @@ window.MusicStats.Metrics = {
 
         console.log(Object.values(counts).sort((a, b) => b.count - a.count))
         return Object.values(counts).sort((a, b) => b.count - a.count);
+    },
+    async getDailyTrackEnds() {
+        const tracks = await window.MusicStats.Storage.getEventToday()
+        const todayDate = window.MusicStats.Utils.getLocalDate();
+
+        if (!tracks || !tracks[todayDate]) {
+            return "No events received.";
+        }
+
+        const firstSongToday = tracks[todayDate][0]["playedAt"]
+        const lastSongToday = tracks[todayDate].at(-1)["playedAt"]
+
+        const formatHours = window.MusicStats.Utils.getDailyMusicBoundaries(firstSongToday, lastSongToday)
+
+        if (formatHours.firts === "None" || formatHours.last === "None") {
+            return "No music data";
+        }
+
+        console.log(formatHours)
+        return formatHours;
     }
 }
