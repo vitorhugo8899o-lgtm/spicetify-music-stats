@@ -1,17 +1,4 @@
 window.MusicStats.Metrics = {
-    async musicTodayCont() {
-        const musicList = await window.MusicStats.Storage.getEventToday();
-
-        const todayDate = window.MusicStats.Utils.getLocalDate();
-
-        if (!musicList || !musicList[todayDate]) {
-            console.log("No music found today.");
-            return [];
-        }
-
-        console.log(musicList[todayDate].length);
-        return musicList[todayDate];
-    },
     async getMetricsPlayedToday() {
         const tracks = await window.MusicStats.Storage.getEventToday()
         const todayDate = window.MusicStats.Utils.getLocalDate();
@@ -33,9 +20,14 @@ window.MusicStats.Metrics = {
 
         result = Object.values(counts).sort((a, b) => b.count - a.count)
 
+        console.log(tracks[todayDate].length)
         console.log(result.length)
         console.log(result)
-        return [result, result.length]
+        return {
+            total_song_listen: tracks[todayDate].length,
+            top_songs: result,
+            unique_songs: result.length
+        }
     },
     async getMetricArtists() {
         const tracks = await window.MusicStats.Storage.getEventToday()
@@ -65,7 +57,10 @@ window.MusicStats.Metrics = {
 
         console.log(result.length)
         console.log(result)
-        return [result, result.length]
+        return {
+            top_artists: result,
+            unique_artists: result.length
+        }
     },
     async getListenTimeToday() {
         const tracks = await window.MusicStats.Storage.getEventToday()
