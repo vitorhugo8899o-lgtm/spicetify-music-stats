@@ -20,13 +20,28 @@ window.MusicStats.Metrics = {
 
         result = Object.values(counts).sort((a, b) => b.count - a.count)
 
-        console.log(tracks[todayDate].length)
-        console.log(result.length)
-        console.log(result)
+        const musicRepeat = result
+            .filter(music => music.count > 1)
+            .map(music => {
+                return {
+                    repeat_count: Number(music.count - 1)
+                }
+            })
+
+        const repeatCount = musicRepeat.reduce(
+            (total, item) => total + item.repeat_count,
+            0
+        );
+
         return {
             total_song_listen: tracks[todayDate].length,
             top_songs: result,
-            unique_songs: result.length
+            unique_songs: result.length,
+            repeated_songs: repeatCount,
+            repeated_playback_rate: Number((
+                (repeatCount / Number(tracks[todayDate].length)) * 100)
+                .toFixed(2)
+            ) + "%"
         }
     },
     async getMetricArtists() {
@@ -55,8 +70,6 @@ window.MusicStats.Metrics = {
 
         result = Object.values(counts).sort((a, b) => b.count - a.count)
 
-        console.log(result.length)
-        console.log(result)
         return {
             top_artists: result,
             unique_artists: result.length
@@ -78,7 +91,6 @@ window.MusicStats.Metrics = {
 
         const totalTime = window.MusicStats.Utils.formatTimeListened(totalMS);
 
-        console.log(totalTime)
         return totalTime;
     },
     async getAlbumMetricsToday() {
@@ -89,7 +101,7 @@ window.MusicStats.Metrics = {
             return "No events received.";
         }
 
-        result = ""
+        let result = ""
         const counts = {}
 
         for (let i = 0; i < tracks[todayDate].length; i++) {
@@ -102,7 +114,6 @@ window.MusicStats.Metrics = {
         }
 
         result = Object.values(counts).sort((a, b) => b.count - a.count)
-        console.log(result)
 
         return {
             top_albums: result,
@@ -126,7 +137,24 @@ window.MusicStats.Metrics = {
             return "No music data";
         }
 
-        console.log(formatHours)
         return formatHours;
     }
+}
+
+
+async function buildMetricsToday() {
+    let build = {
+        music_metrics: await window.MusicStats.Metrics.getMetricsPlayedToday(),
+        artist_metrics: await window.MusicStats.Metrics.getMetricArtists(),
+        album_metrics: await window.MusicStats.Metrics.getAlbumMetricsToday(),
+        listen_time: await window.MusicStats.Metrics.getListenTimeToday(),
+        daily: await window.MusicStats.Metrics.getDailyTrackEnds()
+    }
+
+    if (isNaN(build.music_metrics.total_song_listen)) {
+        build = "No events today."
+        return build;
+    }
+
+    return build;
 }
