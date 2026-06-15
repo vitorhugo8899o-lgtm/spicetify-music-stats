@@ -1,17 +1,4 @@
 window.MusicStats.Metrics = {
-    async musicTodayCont() {
-        const musicList = await window.MusicStats.Storage.getEventToday();
-
-        const todayDate = window.MusicStats.Utils.getLocalDate();
-
-        if (!musicList || !musicList[todayDate]) {
-            console.log("No music found today.");
-            return [];
-        }
-
-        console.log(musicList[todayDate].length);
-        return musicList[todayDate];
-    },
     async getMetricsPlayedToday() {
         const tracks = await window.MusicStats.Storage.getEventToday()
         const todayDate = window.MusicStats.Utils.getLocalDate();
@@ -33,9 +20,29 @@ window.MusicStats.Metrics = {
 
         result = Object.values(counts).sort((a, b) => b.count - a.count)
 
-        console.log(result.length)
-        console.log(result)
-        return [result, result.length]
+        const musicRepeat = result
+            .filter(music => music.count > 1)
+            .map(music => {
+                return {
+                    repeat_count: Number(music.count - 1)
+                }
+            })
+
+        const repeatCount = musicRepeat.reduce(
+            (total, item) => total + item.repeat_count,
+            0
+        );
+
+        return {
+            total_song_listen: tracks[todayDate].length,
+            top_songs: result,
+            unique_songs: result.length,
+            repeated_songs: repeatCount,
+            repeated_playback_rate: Number((
+                (repeatCount / Number(tracks[todayDate].length)) * 100)
+                .toFixed(2)
+            ) + "%"
+        }
     },
     async getMetricArtists() {
         const tracks = await window.MusicStats.Storage.getEventToday()
@@ -63,9 +70,10 @@ window.MusicStats.Metrics = {
 
         result = Object.values(counts).sort((a, b) => b.count - a.count)
 
-        console.log(result.length)
-        console.log(result)
-        return [result, result.length]
+        return {
+            top_artists: result,
+            unique_artists: result.length
+        }
     },
     async getListenTimeToday() {
         const tracks = await window.MusicStats.Storage.getEventToday()
@@ -83,10 +91,9 @@ window.MusicStats.Metrics = {
 
         const totalTime = window.MusicStats.Utils.formatTimeListened(totalMS);
 
-        console.log(totalTime)
         return totalTime;
     },
-    async getTopAlbumToday() {
+    async getAlbumMetricsToday() {
         const tracks = await window.MusicStats.Storage.getEventToday()
         const todayDate = window.MusicStats.Utils.getLocalDate();
 
@@ -94,6 +101,7 @@ window.MusicStats.Metrics = {
             return "No events received.";
         }
 
+        let result = ""
         const counts = {}
 
         for (let i = 0; i < tracks[todayDate].length; i++) {
@@ -105,8 +113,12 @@ window.MusicStats.Metrics = {
             counts[uri].count++;
         }
 
-        console.log(Object.values(counts).sort((a, b) => b.count - a.count))
-        return Object.values(counts).sort((a, b) => b.count - a.count);
+        result = Object.values(counts).sort((a, b) => b.count - a.count)
+
+        return {
+            top_albums: result,
+            unique_albums: result.length
+        }
     },
     async getDailyTrackEnds() {
         const tracks = await window.MusicStats.Storage.getEventToday()
@@ -125,7 +137,24 @@ window.MusicStats.Metrics = {
             return "No music data";
         }
 
-        console.log(formatHours)
         return formatHours;
     }
+}
+
+
+async function buildMetricsToday() {
+    let build = {
+        music_metrics: await window.MusicStats.Metrics.getMetricsPlayedToday(),
+        artist_metrics: await window.MusicStats.Metrics.getMetricArtists(),
+        album_metrics: await window.MusicStats.Metrics.getAlbumMetricsToday(),
+        listen_time: await window.MusicStats.Metrics.getListenTimeToday(),
+        daily: await window.MusicStats.Metrics.getDailyTrackEnds()
+    }
+
+    if (isNaN(build.music_metrics.total_song_listen)) {
+        build = "No events today."
+        return build;
+    }
+
+    return build;
 }
