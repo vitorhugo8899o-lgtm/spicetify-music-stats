@@ -9,22 +9,36 @@ window.MusicStats.Utils = {
     },
     formatTimeListened(milliseconds) {
         const totalSeconds = Math.floor(milliseconds / 1000);
-
         const hours = Math.floor(totalSeconds / 3600);
-
         const minutes = Math.floor((totalSeconds % 3600) / 60);
-
         const seconds = totalSeconds % 60;
 
-        let result = "";
+        const pad = (num) => String(num).padStart(2, '0');
 
         if (hours > 0) {
-            result += `${hours}h `;
+            return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        } else {
+            return `${pad(minutes)}:${pad(seconds)}`;
         }
-        if (minutes > 0 || hours > 0) {
-            result += `${minutes}m `;
+    },
+    getDailyMusicBoundaries(firts, last) {
+        if (!firts || !last) {
+            return { firts: "None", last: "None" };
         }
 
-        return result.trim();
+        const formattingOptions = {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: false
+        }
+
+        const firtsHour = new Date(firts).toLocaleTimeString('pt-BR', formattingOptions);
+        const lastHour = new Date(last).toLocaleTimeString('pt-BR', formattingOptions);
+
+        return {
+            firts: firtsHour,
+            last: lastHour
+        };
     }
 }
