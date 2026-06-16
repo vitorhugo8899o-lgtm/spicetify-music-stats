@@ -1,10 +1,5 @@
 const STORAGE_KEY = "music-stats:data";
 
-async function waitForSpicetify() {
-    while (!Spicetify?.Platform?.LocalStorageAPI) {
-        await new Promise(resolve => setTimeout(resolve, 300));
-    }
-}
 
 window.MusicStats.Storage = {
     async saveEvent(event) {
@@ -25,10 +20,7 @@ window.MusicStats.Storage = {
 
             data[todayDate].push(event);
 
-            Spicetify.Platform.LocalStorageAPI.setItem(
-                STORAGE_KEY,
-                data
-            );
+            await saveData(data);
 
             return "Event saved!";
         } catch (error) {
