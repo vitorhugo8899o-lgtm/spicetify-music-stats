@@ -35,11 +35,41 @@ window.MusicStats.Artist = {
                 "div",
                 {
                     style: {
-                        display: "flex", flexDirection: "column", alignItems: "center"
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        marginBottom: "50px",
+                        marginTop: "10px"
                     }
                 },
+
                 Spicetify.React.createElement(
-                    window.MusicStats.Components.ArtistCard, { artist: topArtist, size: 180 }
+                    "svg",
+                    {
+                        width: 48,
+                        height: 48,
+                        viewBox: "0 0 24 24",
+                        style: {
+                            marginBottom: "-8px",
+                            filter: "drop-shadow(0 2px 6px rgba(255, 215, 0, 0.5))"
+                        }
+                    },
+                    Spicetify.React.createElement("path", {
+                        fill: "#FFD700",
+                        d: "M3 18L5 7l5 5 2-8 2 8 5-5 2 11H3z"
+                    }),
+                    Spicetify.React.createElement("rect", {
+                        x: 3,
+                        y: 18,
+                        width: 18,
+                        height: 2,
+                        fill: "#E6C200"
+                    })
+                ),
+
+                Spicetify.React.createElement(
+                    window.MusicStats.Components.ArtistCard,
+                    { artist: topArtist, size: 180 }
                 )
             ),
 
