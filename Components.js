@@ -104,5 +104,76 @@ window.MusicStats.Components = {
                 createOptionItem("all", "All Time")
             )
         )
+    },
+    ArtistCard({ artist, size = 120 }) {
+        const [image, setImage] = Spicetify.React.useState(null);
+        const [isNameHovered, setIsNameHovered] = Spicetify.React.useState(false);
+
+        Spicetify.React.useEffect(() => {
+            let mounted = true;
+
+            (async () => {
+                try {
+                    const res = await window.MusicStats.Api.fetchArtistInfo(artist.uri)
+                    const avatarUrl = res?.artistUnion?.visuals?.avatarImage?.sources?.[1]?.url;
+                    if (mounted && avatarUrl) setImage(avatarUrl);
+                } catch (err) {
+                    console.error("music-stats: error while searching for image of", artist.name, err);
+                }
+            })();
+
+            return () => { mounted = false; };
+        }, [artist.uri]);
+
+        return Spicetify.React.createElement(
+            "a",
+            {
+                href: artist.uri,
+                onClick: (e) => {
+                    e.preventDefault();
+                    Spicetify.Platform.History.push(`/artist/${artist.uri.split(":")[2]}`);
+                },
+                style: {
+                    textDecoration: "none",
+                    color: "inherit",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    width: size
+                }
+            },
+            Spicetify.React.createElement("div", {
+                style: {
+                    width: size,
+                    height: size,
+                    borderRadius: "50%",
+                    backgroundColor: "#282828",
+                    backgroundImage: image ? `url(${image})` : undefined,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    marginBottom: "8px"
+                }
+            }),
+            Spicetify.React.createElement(
+                "span",
+                {
+                    onMouseEnter: () => setIsNameHovered(true),
+                    onMouseLeave: () => setIsNameHovered(false),
+                    style: {
+                        fontWeight: "bold",
+                        color: "#FFFAF0",
+                        textAlign: "center",
+                        textDecoration: isNameHovered ? "underline" : "none",
+                        cursor: "pointer"
+                    }
+                },
+                artist.name
+            ),
+            Spicetify.React.createElement(
+                "span",
+                { style: { color: "#A7A7A7", fontSize: "0.85em" } },
+                "Artist"
+            )
+        );
     }
 }
