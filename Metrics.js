@@ -41,7 +41,7 @@ window.MusicStats.Metrics = {
             repeated_playback_rate: Number((
                 (repeatCount / Number(tracks[todayDate].length)) * 100)
                 .toFixed(2)
-            ) + "%"
+            )
         }
     },
     async getMetricArtists() {
