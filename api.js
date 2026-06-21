@@ -1,47 +1,28 @@
-const { accessToken, tokenType } = Spicetify.Platform.Session;
-const platform = navigator.platform;
 const cacheArtist = new Map();
 const cacheAlbum = new Map();
 
 window.MusicStats.Api = {
-    async fetchInfo(uri, operation, hash) {
-
-        const params = new URLSearchParams({
-            operationName: `${operation}`,
-            variables: JSON.stringify({ uri: uri, locale: "pt-BR", includePrerelease: true }),
-            extensions: JSON.stringify({
-                persistedQuery: {
-                    version: 1,
-                    sha256Hash: hash
-                }
-            })
-        });
-
-        const res = await fetch(
-            `https://api-partner.spotify.com/pathfinder/v1/query?${params}`,
-            {
-                headers: {
-                    Authorization: `${tokenType} ${accessToken}`,
-                    "app-platform": `${platform}`
-                }
-            }
+    async queryGraphQL(uri, operation) {
+        const res = await Spicetify.GraphQL.Request(
+            operation,
+            { uri: uri, locale: "pt", limit: 1, offset: 0 },
+            { persistCache: true }
         );
 
-        const json = await res.json();
+        console.log(res)
 
-        console.log(json);
-
-        return json.data;
+        return res.data;
     },
     async fetchArtistInfo(uri) {
         if (cacheArtist[uri]) {
             return cacheArtist[uri];
         }
 
-        const info = await this.fetchInfo(
+        const { queryArtistOverview } = Spicetify.GraphQL.Definitions;
+
+        const info = await this.queryGraphQL(
             uri,
-            "queryArtistOverview",
-            "ae0e2958a4ab645b35ca19ac04d0495ae12d9c5d7b7286217674801a9aab281a"
+            queryArtistOverview,
         );
 
         if (!info) {
@@ -51,5 +32,25 @@ window.MusicStats.Api = {
         cacheArtist[uri] = info;
 
         return cacheArtist[uri];
+    },
+    async fetchAlbumInfo(uri) {
+        if (cacheAlbum[uri]) {
+            return cacheAlbum[uri];
+        }
+
+        const { getAlbum } = Spicetify.GraphQL.Definitions;
+
+        const info = await this.queryGraphQL(
+            uri,
+            getAlbum
+        );
+
+        if (!info) {
+            return null;
+        }
+
+        cacheAlbum[uri] = info;
+
+        return cacheAlbum[uri];
     }
 }
