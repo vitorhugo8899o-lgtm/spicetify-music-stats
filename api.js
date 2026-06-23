@@ -9,8 +9,6 @@ window.MusicStats.Api = {
             { persistCache: true }
         );
 
-        console.log(res)
-
         return res.data;
     },
     async fetchArtistInfo(uri) {

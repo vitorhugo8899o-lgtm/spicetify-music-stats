@@ -1,6 +1,8 @@
 window.MusicStats.Artist = {
     ArtistsPage(artist_metrics) {
-        const title = Spicetify.React.createElement(
+        const e = Spicetify.React.createElement;;
+
+        const title = e(
             "h1",
             {
                 style: {
@@ -14,7 +16,7 @@ window.MusicStats.Artist = {
 
         const [topArtist, ...restArtists] = artist_metrics.top_artists
 
-        const uniqueArtists = Spicetify.React.createElement(
+        const uniqueArtists = e(
             "h2",
             {
                 style: {
@@ -25,13 +27,13 @@ window.MusicStats.Artist = {
             `Today you heard a total of ${artist_metrics.unique_artists} unique artists!`
         )
 
-        return Spicetify.React.createElement(
+        return e(
             "div",
             { style: { display: "flex", flexDirection: "column", gap: "20px" } },
             uniqueArtists,
             title,
 
-            topArtist && Spicetify.React.createElement(
+            topArtist && e(
                 "div",
                 {
                     style: {
@@ -43,7 +45,7 @@ window.MusicStats.Artist = {
                     }
                 },
 
-                Spicetify.React.createElement(
+                e(
                     "svg",
                     {
                         width: 48,
@@ -54,11 +56,11 @@ window.MusicStats.Artist = {
                             filter: "drop-shadow(0 2px 6px rgba(255, 215, 0, 0.5))"
                         }
                     },
-                    Spicetify.React.createElement("path", {
+                    e("path", {
                         fill: "#FFD700",
                         d: "M3 18L5 7l5 5 2-8 2 8 5-5 2 11H3z"
                     }),
-                    Spicetify.React.createElement("rect", {
+                    e("rect", {
                         x: 3,
                         y: 18,
                         width: 18,
@@ -67,13 +69,13 @@ window.MusicStats.Artist = {
                     })
                 ),
 
-                Spicetify.React.createElement(
+                e(
                     window.MusicStats.Components.ArtistCard,
                     { artist: topArtist, size: 180 }
                 )
             ),
 
-            Spicetify.React.createElement(
+            e(
                 "div",
                 {
                     style: {
@@ -83,7 +85,7 @@ window.MusicStats.Artist = {
                     }
                 },
                 restArtists.map((artist) =>
-                    Spicetify.React.createElement(
+                    e(
                         window.MusicStats.Components.ArtistCard, {
                         key: artist.uri,
                         artist,
