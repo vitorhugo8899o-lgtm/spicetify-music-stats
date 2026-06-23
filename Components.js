@@ -155,7 +155,7 @@ window.MusicStats.Components = (() => {
                     backgroundImage: image ? `url(${image})` : undefined,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
-                    marginBottom: "8px"
+                    marginBottom: "10px"
                 }
             }),
             e(
@@ -177,6 +177,170 @@ window.MusicStats.Components = (() => {
                 "span",
                 { style: { color: "#A7A7A7", fontSize: "0.85em" } },
                 "Artist"
+            )
+        );
+    }
+
+    function AlbumCard({ album, size = 150 }) {
+        const e = Spicetify.React.createElement;
+
+        const [image, setImage] = Spicetify.React.useState(null);
+        const [backgroundAlbum, setBackgroundAlbum] = Spicetify.React.useState(
+            "rgba(255,255,255,0.05)"
+        );
+        const [isHovered, setIsHovered] = Spicetify.React.useState(false);
+
+        Spicetify.React.useEffect(() => {
+            let cancelled = false;
+
+            async function loadAlbumData() {
+                try {
+                    const res = await window.MusicStats.Api.fetchAlbumInfo(
+                        album.albumUri
+                    );
+
+                    const imageUrl =
+                        res?.albumUnion?.coverArt?.sources?.[0]?.url;
+
+                    const albumColor =
+                        res?.albumUnion?.coverArt?.extractedColors?.colorDark?.hex;
+
+                    console.log(res, albumColor)
+
+                    if (!cancelled) {
+                        setImage(imageUrl ?? null);
+
+                        if (albumColor) {
+                            setBackgroundAlbum(albumColor);
+                        }
+                    }
+                } catch (err) {
+                    console.error(
+                        `Failed to load cover for ${album.albumName}`,
+                        err
+                    );
+                }
+            }
+
+            loadAlbumData();
+
+            return () => {
+                cancelled = true;
+            };
+        }, [album.albumUri]);
+
+        return e(
+            "div",
+            {
+                onMouseEnter: () => setIsHovered(true),
+                onMouseLeave: () => setIsHovered(false),
+                style: {
+                    width: size + 32,
+                    padding: "12px",
+                    borderRadius: "16px",
+
+                    background: `
+                    linear-gradient(
+                        180deg,
+                        ${backgroundAlbum}55,
+                        rgba(0,0,0,0.25)
+                    )
+                `,
+
+                    backdropFilter: "blur(6px)",
+
+                    transition: "all 0.2s ease",
+
+                    transform: isHovered
+                        ? "translateY(-4px)"
+                        : "translateY(0)",
+
+                    boxShadow: isHovered
+                        ? "0 8px 20px rgba(0,0,0,0.35)"
+                        : "0 4px 12px rgba(0,0,0,0.2)",
+
+                    display: "flex",
+                    justifyContent: "center"
+                }
+            },
+
+            e(
+                "a",
+                {
+                    href: album.albumUri,
+                    onClick: (ev) => {
+                        ev.preventDefault();
+
+                        Spicetify.Platform.History.push(
+                            `/album/${album.albumUri.split(":")[2]}`
+                        );
+                    },
+                    style: {
+                        textDecoration: "none",
+                        color: "inherit",
+
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+
+                        width: size
+                    }
+                },
+
+                e("div", {
+                    style: {
+                        width: size,
+                        height: size,
+
+                        borderRadius: "12px",
+
+                        backgroundColor: "#282828",
+                        backgroundImage: image
+                            ? `url(${image})`
+                            : undefined,
+
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+
+                        marginBottom: "10px",
+
+                        boxShadow:
+                            "0 6px 14px rgba(0,0,0,0.35)"
+                    }
+                }),
+
+                e(
+                    "span",
+                    {
+                        style: {
+                            fontWeight: "bold",
+                            color: "#FFFAF0",
+
+                            textAlign: "center",
+
+                            minHeight: "48px",
+                            maxWidth: size,
+
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+
+                            lineHeight: "1.2"
+                        }
+                    },
+                    album.albumName
+                ),
+
+                e(
+                    "span",
+                    {
+                        style: {
+                            color: "#B3B3B3",
+                            fontSize: "0.85em"
+                        }
+                    },
+                    "Album"
+                )
             )
         );
     }
@@ -448,6 +612,7 @@ window.MusicStats.Components = (() => {
         StatCard,
         RepeatRateBar,
         SummaryTextCard,
-        FavoriteEntityCard
+        FavoriteEntityCard,
+        AlbumCard
     };
 })();
