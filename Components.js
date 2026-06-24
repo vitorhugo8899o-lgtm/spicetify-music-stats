@@ -112,15 +112,24 @@ window.MusicStats.Components = (() => {
     function ArtistCard({ artist, size = 120 }) {
         const [image, setImage] = Spicetify.React.useState(null);
         const [isNameHovered, setIsNameHovered] = Spicetify.React.useState(false);
+        const [isHovered, setIsHovered] = Spicetify.React.useState(false);
+        const [backgroundAlbum, setBackgroundAlbum] = Spicetify.React.useState(
+            "rgba(255,255,255,0.05)"
+        );
 
         Spicetify.React.useEffect(() => {
             let mounted = true;
 
             (async () => {
                 try {
-                    const res = await window.MusicStats.Api.fetchArtistInfo(artist.uri)
+                    const res = await window.MusicStats.Api.fetchArtistInfo(artist.uri);
                     const avatarUrl = res?.artistUnion?.visuals?.avatarImage?.sources?.[1]?.url;
-                    if (mounted && avatarUrl) setImage(avatarUrl);
+                    const artistBackground = res?.artistUnion?.visuals?.avatarImage?.extractedColors?.colorRaw?.hex;
+
+                    if (mounted) {
+                        if (avatarUrl) setImage(avatarUrl);
+                        if (artistBackground) setBackgroundAlbum(artistBackground);
+                    }
                 } catch (err) {
                     console.error("music-stats: error while searching for image of", artist.name, err);
                 }
@@ -130,53 +139,75 @@ window.MusicStats.Components = (() => {
         }, [artist.uri]);
 
         return e(
-            "a",
+            "div",
             {
-                href: artist.uri,
-                onClick: (ev) => {
-                    ev.preventDefault();
-                    Spicetify.Platform.History.push(`/artist/${artist.uri.split(":")[2]}`);
-                },
+                onMouseEnter: () => setIsHovered(true),
+                onMouseLeave: () => setIsHovered(false),
                 style: {
-                    textDecoration: "none",
-                    color: "inherit",
+                    width: size + 32,
+                    padding: "12px",
+                    borderRadius: "16px",
+                    background: `linear-gradient(180deg, ${backgroundAlbum}55, rgba(0,0,0,0.25))`,
+                    backdropFilter: "blur(6px)",
+                    transition: "all 0.2s ease",
+                    transform: isHovered ? "translateY(-4px)" : "translateY(0)",
+                    boxShadow: isHovered
+                        ? "0 8px 20px rgba(0,0,0,0.35)"
+                        : "0 4px 12px rgba(0,0,0,0.2)",
                     display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    width: size
+                    justifyContent: "center"
                 }
             },
-            e("div", {
-                style: {
-                    width: size,
-                    height: size,
-                    borderRadius: "50%",
-                    backgroundColor: "#282828",
-                    backgroundImage: image ? `url(${image})` : undefined,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    marginBottom: "10px"
-                }
-            }),
             e(
-                "span",
+                "a",
                 {
-                    onMouseEnter: () => setIsNameHovered(true),
-                    onMouseLeave: () => setIsNameHovered(false),
+                    href: artist.uri,
+                    onClick: (ev) => {
+                        ev.preventDefault();
+                        Spicetify.Platform.History.push(`/artist/${artist.uri.split(":")[2]}`);
+                    },
                     style: {
-                        fontWeight: "bold",
-                        color: "#FFFAF0",
-                        textAlign: "center",
-                        textDecoration: isNameHovered ? "underline" : "none",
-                        cursor: "pointer"
+                        textDecoration: "none",
+                        color: "inherit",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        width: size
                     }
                 },
-                artist.name
-            ),
-            e(
-                "span",
-                { style: { color: "#A7A7A7", fontSize: "0.85em" } },
-                "Artist"
+                e("div", {
+                    style: {
+                        width: size,
+                        height: size,
+                        borderRadius: "50%",
+                        backgroundColor: "#282828",
+                        backgroundImage: image ? `url(${image})` : undefined,
+                        backgroundSize: "cover",
+                        backgroundPosition: "center",
+                        marginBottom: "10px",
+                        boxShadow: "0 6px 14px rgba(0,0,0,0.35)"
+                    }
+                }),
+                e(
+                    "span",
+                    {
+                        onMouseEnter: () => setIsNameHovered(true),
+                        onMouseLeave: () => setIsNameHovered(false),
+                        style: {
+                            fontWeight: "bold",
+                            color: "#FFFAF0",
+                            textAlign: "center",
+                            textDecoration: isNameHovered ? "underline" : "none",
+                            cursor: "pointer"
+                        }
+                    },
+                    artist.name
+                ),
+                e(
+                    "span",
+                    { style: { color: "#A7A7A7", fontSize: "0.85em" } },
+                    "Artist"
+                )
             )
         );
     }
@@ -189,6 +220,8 @@ window.MusicStats.Components = (() => {
             "rgba(255,255,255,0.05)"
         );
         const [isHovered, setIsHovered] = Spicetify.React.useState(false);
+        const [isNameHovered, setIsNameHovered] = Spicetify.React.useState(false);
+
 
         Spicetify.React.useEffect(() => {
             let cancelled = false;
@@ -204,8 +237,6 @@ window.MusicStats.Components = (() => {
 
                     const albumColor =
                         res?.albumUnion?.coverArt?.extractedColors?.colorDark?.hex;
-
-                    console.log(res, albumColor)
 
                     if (!cancelled) {
                         setImage(imageUrl ?? null);
@@ -312,11 +343,14 @@ window.MusicStats.Components = (() => {
                 e(
                     "span",
                     {
+                        onMouseEnter: () => setIsNameHovered(true),
+                        onMouseLeave: () => setIsNameHovered(false),
                         style: {
                             fontWeight: "bold",
                             color: "#FFFAF0",
 
                             textAlign: "center",
+                            textDecoration: isNameHovered ? "underline" : "none",
 
                             minHeight: "48px",
                             maxWidth: size,
