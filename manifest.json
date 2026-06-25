@@ -4,7 +4,13 @@
     "active-icon": "",
     "subfiles": [
         "Metrics.js",
-        "Components.js"
+        "Components.js",
+        "DefaultPage.js",
+        "api.js",
+        "ArtistsPage.js",
+        "OverViewPage.js",
+        "AlbumPage.js",
+        "SongsPage.js"
     ],
     "subfiles_extension": [
         "Database.js",
