@@ -40,5 +40,35 @@ window.MusicStats.Utils = {
             firts: firtsHour,
             last: lastHour
         };
+    },
+    buildTrackerData(tracker_data) {
+        console.log(tracker_data)
+        const track = tracker_data?.trackUnion;
+        if (!track) return null;
+
+        const firstArtistName = track.firstArtist?.items?.[0]?.profile?.name
+            || track.firstArtist?.items?.[0]?.name
+            || "Unknown artist";
+
+        const otherArtists = track.otherArtists?.items?.map(a => a.profile?.name || a.name) || [];
+
+        const allArtists = [firstArtistName, ...otherArtists].join(", ");
+
+        const sources = track.albumOfTrack?.coverArt?.sources || [];
+        const bestCover = sources.find(s => s.height === 640)?.url || sources[0]?.url || "";
+
+        const dominantColor = track.albumOfTrack?.coverArt?.extractedColors?.colorRaw?.hex || "#121212";
+
+        return {
+            title: track.name,
+            artist: allArtists,
+            album: track.albumOfTrack?.name,
+            duration: window.MusicStats.Utils.formatTimeListened(track.duration?.totalMilliseconds || 0),
+            explicit: track.contentRating?.label === "EXPLICIT",
+            liked: track.saved,
+            cover: bestCover,
+            uri: track.uri,
+            dominantColor
+        };
     }
 }
