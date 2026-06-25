@@ -1,5 +1,6 @@
 const cacheArtist = new Map();
 const cacheAlbum = new Map();
+const cacheTrack = new Map();
 
 window.MusicStats.Api = {
     async queryGraphQL(uri, operation) {
@@ -50,5 +51,77 @@ window.MusicStats.Api = {
         cacheAlbum[uri] = info;
 
         return cacheAlbum[uri];
+    },
+    async fetchTrackInfo(uri) {
+        if (cacheTrack[uri]) {
+            return cacheTrack[uri];
+        }
+
+        const { getTrack } = Spicetify.GraphQL.Definitions;
+
+        const info = await this.queryGraphQL(
+            uri,
+            getTrack
+        );
+
+        if (!info) {
+            console.log(info)
+            return null;
+        }
+
+        cacheTrack[uri] = info;
+
+        console.log(info)
+        return cacheTrack[uri];
+    },
+    async playTracker(uri) {
+        if (!uri || uri.split(":")[0] != "spotify") {
+            console.log(uri)
+            console.log("Invalid URI")
+            return;
+        }
+
+        try {
+            await Spicetify.Player.playUri(uri)
+            return;
+        } catch (err) {
+            console.log("Error playing music: ", err)
+        }
+    },
+    async stopTracker() {
+        try {
+            await Spicetify.Player.pause()
+            return;
+        } catch (err) {
+            console.log("Error pausing music: ", err)
+        }
+    },
+    async favoriteSong() {
+        const isFav = await Spicetify.Player.getHeart();
+
+        if (isFav === true) {
+            return true;
+        }
+
+        try {
+            await Spicetify.Player.setHeart(true)
+            return true;
+        } catch (err) {
+            console.log("Error adding song to favorites: ", err)
+        }
+    },
+    async unfavoriteSong() {
+        const isFav = await Spicetify.Player.getHeart();
+
+        if (isFav === false) {
+            return false;
+        }
+
+        try {
+            await Spicetify.Player.setHeart(false)
+            return false;
+        } catch (err) {
+            console.log("Error removing song from favorites: ", err)
+        }
     }
 }
