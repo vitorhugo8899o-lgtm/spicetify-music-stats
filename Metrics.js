@@ -13,7 +13,7 @@ window.MusicStats.Metrics = {
         for (let i = 0; i <= tracks[todayDate].length - 1; i++) {
             const uri = tracks[todayDate][i].trackUri;
             if (!counts[uri]) {
-                counts[uri] = { count: 0, trackName: tracks[todayDate][i].trackName, artists: tracks[todayDate][i].artists };
+                counts[uri] = { count: 0, trackUri: uri, trackName: tracks[todayDate][i].trackName, artists: tracks[todayDate][i].artists };
             }
             counts[uri].count++;
         }
