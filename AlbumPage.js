@@ -15,17 +15,6 @@ window.MusicStats.Album = {
             },
 
             e(
-                "h2",
-                {
-                    style: {
-                        color: "#FFFAF0",
-                        margin: "5px"
-                    }
-                },
-                `Today you heard a total of ${album_metrics.unique_albums} unique albums!`
-            ),
-
-            e(
                 "h1",
                 {
                     style: {
@@ -34,6 +23,12 @@ window.MusicStats.Album = {
                     }
                 },
                 "Top Albums"
+            ),
+
+            e(
+                "h2",
+                { style: { color: "#b3b3b3", margin: "5px 0 24px 0", fontSize: "14px" } },
+                `Today you heard a total of ${album_metrics.unique_albums} unique albums!`
             ),
 
             topAlbum &&
