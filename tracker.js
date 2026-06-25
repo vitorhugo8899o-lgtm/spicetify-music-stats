@@ -1,11 +1,9 @@
-// Contexto Global Para ser acessado pelo 'onprogress'
 let currentSession = {
     registered: false,
     eventData: null
 };
 
 
-// Captura o evento de mudança de musica
 Spicetify.Player.addEventListener("songchange", (event) => {
     const track = event.data?.item ?? false;
 
@@ -47,7 +45,6 @@ Spicetify.Player.addEventListener("onprogress", async () => {
 });
 
 
-// Construtor
 function buildPlaybackEvent(object) {
 
     const build = {
