@@ -42,7 +42,6 @@ window.MusicStats.Utils = {
         };
     },
     buildTrackerData(tracker_data) {
-        console.log(tracker_data)
         const track = tracker_data?.trackUnion;
         if (!track) return null;
 

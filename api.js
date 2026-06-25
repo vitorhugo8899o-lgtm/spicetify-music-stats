@@ -76,8 +76,6 @@ window.MusicStats.Api = {
     },
     async playTracker(uri) {
         if (!uri || uri.split(":")[0] != "spotify") {
-            console.log(uri)
-            console.log("Invalid URI")
             return;
         }
 
