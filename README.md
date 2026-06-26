@@ -26,8 +26,7 @@ Take a look at some parts of the application interface.
 
 | Overview | Artists |
 | :-------: | :------: |
-| <img width="1280" height="987" alt="OverView" src="https://github.com/user-attachments/assets/db592bd4-251d-4cb1-877e-ec9287f222f4" />| <img width="1280" height="993" alt="Artist-Page" src="https://github.com/user-attachments/assets/7345e9f9-1076-4f22-b112-2d8f2a2db23e" />
-|
+| <img width="1280" height="987" alt="OverView" src="https://github.com/user-attachments/assets/db592bd4-251d-4cb1-877e-ec9287f222f4" />| <img width="1280" height="993" alt="Artist-Page" src="https://github.com/user-attachments/assets/7345e9f9-1076-4f22-b112-2d8f2a2db23e" />|
 
 | Albums | Tracks |
 | :------: | :------: |
