@@ -4,9 +4,11 @@ const cacheTrack = new Map();
 
 window.MusicStats.Api = {
     async queryGraphQL(uri, operation) {
+        const locale = Spicetify.Platform.Session.locale;
+
         const res = await Spicetify.GraphQL.Request(
             operation,
-            { uri: uri, locale: "pt", limit: 1, offset: 0 },
+            { uri: uri, locale: locale, limit: 1, offset: 0 },
             { persistCache: true }
         );
 
