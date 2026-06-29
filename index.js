@@ -12,7 +12,7 @@ function render() {
         async function loadMetrics() {
             setIsLoading(true);
             try {
-                const data = await buildMetricsToday();
+                const data = await buildMetrics(activeOption);
 
                 setMetricsData(data);
 
@@ -59,7 +59,6 @@ function render() {
                 break;
 
             case "songs":
-                console.log("[index] music_metrics:", metricsData.music_metrics);
                 content = window.MusicStats.Song.SongsPage
                     ? e(window.MusicStats.Song.SongsPage, metricsData.music_metrics)
                     : e("h1", null, "Songs Page");
