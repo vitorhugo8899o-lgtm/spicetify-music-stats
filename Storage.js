@@ -28,7 +28,7 @@ window.MusicStats.Storage = {
         }
     },
 
-    async getEventToday() {
+    async getEvents() {
         try {
             await initDatabase();
 
@@ -37,5 +37,50 @@ window.MusicStats.Storage = {
             console.error(error);
             return {};
         }
+    },
+
+    async getEventsToday() {
+        const tracks = await this.getEvents()
+        const todayDate = window.MusicStats.Utils.getLocalDate();
+
+        return tracks[todayDate]
+    },
+
+    async getEventsWeek() {
+        const events = await this.getEvents();
+
+        const tracks = [];
+        const currentDate = new Date();
+
+        for (let i = 0; i < 7; i++) {
+            const key = window.MusicStats.Utils.formatDate(currentDate);
+
+            if (events[key]) {
+                tracks.push(...events[key]);
+            }
+
+            currentDate.setDate(currentDate.getDate() - 1);
+        }
+
+        return tracks;
+    },
+
+    async getEventsMonth() {
+        const events = await this.getEvents();
+
+        const tracks = [];
+        const currentDate = new Date();
+
+        for (let i = 0; i < 30; i++) {
+            const key = window.MusicStats.Utils.formatDate(currentDate);
+
+            if (events[key]) {
+                tracks.push(...events[key]);
+            }
+
+            currentDate.setDate(currentDate.getDate() - 1);
+        }
+
+        return tracks;
     }
 };

@@ -21,8 +21,6 @@ Spicetify.Player.addEventListener("songchange", (event) => {
         registered: false,
         eventData: buildPlaybackEvent(track)
     }
-
-    console.log(currentSession.eventData)
 });
 
 
@@ -34,11 +32,7 @@ Spicetify.Player.addEventListener("onprogress", async () => {
     let progress = Spicetify.Player.getProgressPercent();
 
     if (progress >= 0.60) {
-        console.log("Music reached 60%. Saving...");
-
         const resultado = await window.MusicStats.Storage.saveEvent(currentSession.eventData);
-        console.log(window.MusicStats.Storage.getEventToday())
-        console.log(resultado);
 
         currentSession.registered = true;
     }
@@ -46,7 +40,6 @@ Spicetify.Player.addEventListener("onprogress", async () => {
 
 
 function buildPlaybackEvent(object) {
-
     const build = {
         "trackUri": object.uri,
         "trackName": object.name,
