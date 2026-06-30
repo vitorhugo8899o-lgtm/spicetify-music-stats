@@ -108,7 +108,7 @@ window.MusicStats.Song = {
 
         const uniqueSongs = e("h2",
             { style: { color: "#b3b3b3", margin: "5px 0 24px 0", fontSize: "14px" } },
-            `Today you heard a total of ${songs_metrics?.top_songs?.length || 0} unique songs!`
+            `You heard a total of ${songs_metrics?.top_songs?.length || 0} unique songs!`
         );
 
         if (loading) {
