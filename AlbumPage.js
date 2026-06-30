@@ -28,7 +28,7 @@ window.MusicStats.Album = {
             e(
                 "h2",
                 { style: { color: "#b3b3b3", margin: "5px 0 24px 0", fontSize: "14px" } },
-                `Today you heard a total of ${album_metrics.unique_albums} unique albums!`
+                `You heard a total of ${album_metrics.unique_albums} unique albums!`
             ),
 
             topAlbum &&

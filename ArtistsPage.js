@@ -19,7 +19,7 @@ window.MusicStats.Artist = {
         const uniqueArtists = e(
             "h2",
             { style: { color: "#b3b3b3", margin: "5px 0 24px 0", fontSize: "14px" } },
-            `Today you heard a total of ${artist_metrics.unique_artists} unique artists!`
+            `You heard a total of ${artist_metrics.unique_artists} unique artists!`
         )
 
         return e(

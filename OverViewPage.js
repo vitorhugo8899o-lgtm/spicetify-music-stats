@@ -57,7 +57,7 @@ window.MusicStats.Overview = {
                 icon: C.ClockIcon(),
                 label: "Total Listening Time",
                 value: overview_metrics.listen_time,
-                subtitle: "Your total music listening time today.",
+                subtitle: "Your total music listening time.",
                 flexGrow: 2
             }),
             C.StatCard({
@@ -101,7 +101,7 @@ window.MusicStats.Overview = {
         const favoritesTitle = e(
             "h2",
             { style: { color: "#FFFAF0", margin: "10px 0 0 0", fontSize: "1.4em" } },
-            "Your Favorites Today"
+            "Your Favorites"
         );
 
         const favoriteArtistCard = C.FavoriteEntityCard({
